@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Basic C++ Code Editor with CodeMirror</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/theme/dracula.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/mode/clike/clike.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/addon/edit/matchbrackets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/addon/edit/closebrackets.js"></script>
+    <style>
+        /* CSS using BEM methodology */
+        .code-editor {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .code-editor__buttons {
+            margin-top: 10px;
+        }
+
+        .code-editor__button {
+            margin-right: 10px;
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .code-editor__button:hover {
+            background-color: #0056b3;
+        }
+
+        .code-editor__button.copy-button {
+            background-color: #28a745;
+        }
+
+        .code-editor__button.copy-button:hover {
+            background-color: #1e7e34;
+        }
+
+        .code-editor__locked {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="code-editor">
+        <textarea id="code"></textarea>
+        <div class="code-editor__buttons">
+            <button class="code-editor__button" id="save-button">Save</button>
+            <button class="code-editor__button copy-button" id="copy-button">Copy</button>
+            <button class="code-editor__button" id="lock-button">Lock</button>
+        </div>
+    </div>
+
+    <script>
+        const codeTextarea = document.getElementById("code");
+        const saveButton = document.getElementById("save-button");
+        const copyButton = document.getElementById("copy-button");
+        const lockButton = document.getElementById("lock-button");
+        let isLocked = false;
+        let codeMirror;
+
+        // Initialize CodeMirror with C++ mode and the "Dracula" theme
+        codeMirror = CodeMirror.fromTextArea(codeTextarea, {
+            mode: "text/x-c++src",
+            lineNumbers: true,
+            theme: "dracula",
+            matchBrackets: true,     // Enable bracket matching
+            autoCloseBrackets: true, // Auto-close brackets
+            indentUnit: 4,           // Indent with 4 spaces (adjust as needed)
+        });
+
+        // Save button functionality
+        saveButton.addEventListener("click", () => {
+            const code = codeMirror.getValue();
+            // Here, you can save the code to a server or perform any other action.
+            console.log("Code saved:", code);
+        });
+
+        // Copy button functionality
+        copyButton.addEventListener("click", () => {
+            codeMirror.focus();
+            codeMirror.execCommand("selectAll");
+            document.execCommand("copy");
+            console.log("Code copied to clipboard");
+        });
+
+        // Lock/Unlock button functionality
+        lockButton.addEventListener("click", () => {
+            isLocked = !isLocked;
+            if (isLocked) {
+                lockButton.classList.add("code-editor__locked");
+                codeMirror.setOption("readOnly", "nocursor");
+            } else {
+                lockButton.classList.remove("code-editor__locked");
+                codeMirror.setOption("readOnly", false);
+            }
+        });
+    </script>
+</body>
+</html>
